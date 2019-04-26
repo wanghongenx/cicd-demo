@@ -1,0 +1,16 @@
+#!/usr/bin/expect
+
+set timeout 300
+spawn ssh [lindex $argv 0]@[lindex $argv 1]
+expect {
+  "password:"
+  {send "[lindex $argv 2]\n"}
+}
+expect {
+  "*#"
+  {send "kubectl delete -f /workspace/istio-1.0.0/samples/helloworld/helloworld-istio.yaml ; kubectl create -f /workspace/istio-1.0.0/samples/helloworld/helloworld-istio.yaml\r"}
+}
+expect "*#"
+send "exit\r"
+interact
+expect eof
